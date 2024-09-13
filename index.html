@@ -4,10 +4,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Juegos de Azar</title>
+    <title>Juegos de Azar: Dados y Piedra, Papel o Tijera | ADA Games</title>
+    
+    <!-- Metadatos para SEO -->
+    <meta name="description" content="Disfruta de emocionantes juegos de azar online: Dados y Piedra, Papel o Tijera. Juega gratis y pon a prueba tu suerte en ADA Games.">
+    <meta name="keywords" content="juegos de azar, dados, piedra papel tijera, juegos online, ADA Games">
+    <meta name="author" content="ADA Games">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://cristaldoyonathan.github.io">
+    <meta property="og:title" content="Juegos de Azar Online | ADA Games">
+    <meta property="og:description" content="Juega dados y piedra, papel o tijera online. Diversión garantizada en ADA Games.">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="cristaldoyonathan.github.io">
+    <meta property="twitter:title" content="Juegos de Azar Online | ADA Games">
+    <meta property="twitter:description" content="Juega dados y piedra, papel o tijera online. Diversión garantizada en ADA Games.">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://cristaldoyonathan.github.io">
+    
+    <!-- Tus estilos y scripts actuales -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
+    
     <style>
         [x-cloak] {
             display: none;
@@ -201,6 +223,25 @@
                 transform: rotateY(1800deg);
             }
         }
+
+        .transition-all {
+            transition-property: all;
+            transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+            transition-duration: 150ms;
+        }
+
+        .duration-100 {
+            transition-duration: 100ms;
+        }
+
+        .transform {
+            transform: translateX(var(--tw-translate-x)) translateY(var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+        }
+
+        .scale-110 {
+            --tw-scale-x: 1.1;
+            --tw-scale-y: 1.1;
+        }
     </style>
 </head>
 
@@ -259,6 +300,10 @@
                         <a @click.prevent="changeGame('moneda')" href="#" class="flex items-center space-x-2 mt-3">
                             <i class="fas fa-coins"></i>
                             <span>Cara o Cruz</span>
+                        </a>
+                        <a @click.prevent="changeGame('ppt')" href="#" class="flex items-center space-x-2 mt-3">
+                            <i class="fas fa-hand-rock"></i>
+                            <span>Piedra, Papel o Tijera</span>
                         </a>
                     </nav>
                 </div>
@@ -335,6 +380,79 @@
                             Lanzar Moneda
                         </button>
                     </section>
+
+                    <!-- Piedra, Papel o Tijera Section -->
+                    <section id="ppt" x-show="currentGame === 'ppt'" class="text-center"
+                        x-transition:enter="transition ease-out duration-300"
+                        x-transition:enter-start="opacity-0 transform scale-90"
+                        x-transition:enter-end="opacity-100 transform scale-100">
+                        <h2 class="mb-6 text-3xl font-bold text-gray-800">Piedra, Papel o Tijera</h2>
+
+                        <!-- Opciones de juego -->
+                        <div class="flex justify-center space-x-4 mb-6">
+                            <button @click="playPPT('piedra')"
+                                class="p-4 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition-all duration-300 transform hover:scale-110">
+                                <i class="fas fa-hand-rock text-3xl"></i>
+                            </button>
+                            <button @click="playPPT('papel')"
+                                class="p-4 bg-green-500 text-white rounded-full hover:bg-green-600 transition-all duration-300 transform hover:scale-110">
+                                <i class="fas fa-hand-paper text-3xl"></i>
+                            </button>
+                            <button @click="playPPT('tijera')"
+                                class="p-4 bg-red-500 text-white rounded-full hover:bg-red-600 transition-all duration-300 transform hover:scale-110">
+                                <i class="fas fa-hand-scissors text-3xl"></i>
+                            </button>
+                        </div>
+
+                        <!-- Área de juego -->
+                        <div class="flex justify-center items-center mb-6">
+                            <div class="w-1/3 text-center">
+                                <p class="text-lg font-semibold mb-2">Tú</p>
+                                <i x-show="isPlaying" :class="animationIcons[currentAnimationFrame]"
+                                    class="text-5xl text-blue-600 transition-all duration-100 transform"
+                                    :class="{'scale-110': isAnimationFrameEven}"></i>
+                                <i x-show="!isPlaying && pptChoices.player" :class="pptIcons[pptChoices.player]"
+                                    class="text-5xl text-blue-600"></i>
+                                <span x-show="!isPlaying && !pptChoices.player" class="text-5xl text-blue-600">?</span>
+                            </div>
+                            <div class="w-1/3 text-center">
+                                <p class="text-3xl font-bold">VS</p>
+                            </div>
+                            <div class="w-1/3 text-center">
+                                <p class="text-lg font-semibold mb-2">Computadora</p>
+                                <i x-show="isPlaying" :class="animationIcons[currentAnimationFrame]"
+                                    class="text-5xl text-red-600 transition-all duration-100 transform"
+                                    :class="{'scale-110': isAnimationFrameEven}"></i>
+                                <i x-show="!isPlaying && pptChoices.computer" :class="pptIcons[pptChoices.computer]"
+                                    class="text-5xl text-red-600"></i>
+                                <span x-show="!isPlaying && !pptChoices.computer" class="text-5xl text-red-600">?</span>
+                            </div>
+                        </div>
+
+                        <!-- Resultados -->
+                        <div x-show="!isPlaying && pptResult" class="mb-6">
+                            <p x-text="pptResult" class="text-2xl font-bold mb-2"
+                                :class="{'text-green-600': pptResult.includes('Ganaste'), 'text-red-600': pptResult.includes('Perdiste'), 'text-yellow-600': pptResult.includes('Empate')}">
+                            </p>
+                            <p class="text-xl">Puntuación: Tú <span x-text="pptScore.player"
+                                    class="font-bold text-blue-600"></span> - Computadora <span
+                                    x-text="pptScore.computer" class="font-bold text-red-600"></span></p>
+                        </div>
+
+                        <!-- Botón de reinicio (diseño original) -->
+                        <button @click="resetPPT" class="px-8 py-4 text-white font-bold text-lg
+                            bg-gradient-to-r from-purple-500 to-indigo-600 
+                            hover:from-purple-600 hover:to-indigo-700
+                            rounded-full
+                            focus:outline-none focus:ring-4 focus:ring-purple-300 focus:ring-opacity-50
+                            transition-all duration-300
+                            shadow-lg hover:shadow-xl
+                            transform hover:-translate-y-1
+                            hover:scale-105">
+                            <i class="fas fa-redo-alt mr-2"></i>
+                            Reiniciar Juego
+                        </button>
+                    </section>
                 </div>
             </main>
         </div>
@@ -350,6 +468,23 @@
                 diceNumbers: [1, 1],
                 isFlipping: false,
                 coinResult: '',
+                pptResult: '',
+                pptScore: { player: 0, computer: 0 },
+                pptChoices: { player: null, computer: null },
+                pptIcons: {
+                    piedra: 'fas fa-hand-rock',
+                    papel: 'fas fa-hand-paper',
+                    tijera: 'fas fa-hand-scissors',
+                    null: 'fas fa-question'
+                },
+                // Para la animación
+                isPlaying: false,
+                currentAnimationFrame: 0,
+                animationIcons: [
+                    'fas fa-hand-rock',
+                    'fas fa-hand-paper',
+                    'fas fa-hand-scissors'
+                ],
                 changeGame(game) {
                     this.currentGame = game;
                     this.closeSidebar();
@@ -392,6 +527,54 @@
                         // Establecer la rotación final basada en el resultado
                         this.$refs.coin.style.transform = outcome === 'Cara' ? 'rotateY(0deg)' : 'rotateY(180deg)';
                     }, 3000);
+                },
+                playPPT(playerChoice) {
+                    if (this.isPlaying) return;
+
+                    this.isPlaying = true;
+                    const choices = ['piedra', 'papel', 'tijera'];
+                    const computerChoice = choices[Math.floor(Math.random() * 3)];
+
+                    let animationFrame = 0;
+                    const animationInterval = setInterval(() => {
+                        this.currentAnimationFrame = animationFrame % 3;
+                        animationFrame++;
+                        if (animationFrame >= 9) { // 3 ciclos completos
+                            clearInterval(animationInterval);
+                            this.showResult(playerChoice, computerChoice);
+                        }
+                    }, 200); // Cambia cada 200ms
+                },
+                showResult(playerChoice, computerChoice) {
+                    this.pptChoices.player = playerChoice;
+                    this.pptChoices.computer = computerChoice;
+
+                    let result;
+                    if (playerChoice === computerChoice) {
+                        result = "Empate";
+                    } else if (
+                        (playerChoice === 'piedra' && computerChoice === 'tijera') ||
+                        (playerChoice === 'papel' && computerChoice === 'piedra') ||
+                        (playerChoice === 'tijera' && computerChoice === 'papel')
+                    ) {
+                        result = "¡Ganaste!";
+                        this.pptScore.player++;
+                    } else {
+                        result = "Perdiste";
+                        this.pptScore.computer++;
+                    }
+
+                    this.pptResult = `${result}`;
+                    this.isPlaying = false;
+                },
+                resetPPT() {
+                    this.pptScore = { player: 0, computer: 0 };
+                    this.pptResult = '';
+                    this.pptChoices = { player: null, computer: null };
+                    this.isPlaying = false;
+                },
+                get isAnimationFrameEven() {
+                    return this.currentAnimationFrame % 2 === 0;
                 }
             }
         }
